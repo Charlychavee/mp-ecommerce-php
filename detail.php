@@ -14,6 +14,10 @@
 
     <script src="https://www.mercadopago.com/v2/security.js" view="home"></script>
 
+    <script
+        src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
+        data-preference-id="<?php echo $preference->id; ?>">
+     </script>
 
     <link rel="stylesheet" href="./assets/category-landing.css" media="screen, print">
 
