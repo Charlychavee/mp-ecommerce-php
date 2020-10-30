@@ -1,5 +1,11 @@
+
+<?php
+    include 'ml.php'
+?>
 <!DOCTYPE html>
-<html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=1024">
     <title>Tienda e-commerce</title>
@@ -14,10 +20,7 @@
 
     <script src="https://www.mercadopago.com/v2/security.js" view="home"></script>
 
-    <script
-        src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
-        data-preference-id="<?php echo $preference->id; ?>">
-     </script>
+    <header name="X-Frame-Options" value="ALLOW FROM https://www.mercadopago.com.mx/ "> </header>
 
     <link rel="stylesheet" href="./assets/category-landing.css" media="screen, print">
 
@@ -94,6 +97,7 @@
                             </div>
                         </div>
                         <div class="as-accessories-results  as-search-desktop">
+                            
                             <div class="width:60%">
                                 <div class="as-producttile-tilehero with-paddlenav " style="float:left;">
                                     <div class="as-dummy-container as-dummy-img">
@@ -131,13 +135,23 @@
                                             </h3>
                                         </div>
                                         <h3 >
-                                            <?php echo $_POST['price'] ?>
+                                            <?php echo "$" .$_POST['price'] ?>
                                         </h3>
                                         <h3 >
-                                            <?php echo "$" . $_POST['unit'] ?>
+                                            <?php echo  $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <button type="submit" class="mercadopago-button" formmethod="post">Pagar</button>
+                                    <form action="/cursos/mp-ecommerce-php/detail.php" method="get">
+                                            <input type="hidden" name="img" value=<?php echo  $_POST['img'] ?>>
+                                            <input type="hidden" name="title" value=<?php echo  $_POST['title'] ?>>
+                                            <input type="hidden" name="price" value=<?php echo  $_POST['price'] ?>>
+                                            <input type="hidden" name="unit" value=<?php echo  $_POST['unit'] ?>>
+                                            <script
+  src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
+  data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra">
+</script>
+                                        </form>
+                                    
                                 </div>
                             </div>
                         </div>
