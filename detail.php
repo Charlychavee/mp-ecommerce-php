@@ -1,102 +1,65 @@
 <?php
+include_once __DIR__.'/bootstrap.php';
 
-require_once './vendor/autoload.php';
-/* get data from .env */
-
-
-/* access keys */
-$access_token = "APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948";
-$public_key = "APP_USR-158fff95-0bdf-4149-9abc-c8b0ac7f289f";
-$collector_id = "592190948";
-$integrator_id = "dev_24c65fb163bf11ea96500242ac130004";
-
-/* seller user data */
-$user_id = "535650015";
-$user_email = "test_user_58295862@testuser.com";
-$user_password = "qatest9980";
-
-// Agrega credenciales
-MercadoPago\SDK::setAccessToken($access_token);
-
-// seteamos el integrator-id
-MercadoPago\SDK::setIntegratorId($integrator_id);
-
-// Crea un objeto de preferencia
 $preference = new MercadoPago\Preference();
+$preference->external_reference = 'charlychavee2@gmail.com';
+$preference->payment_methods = [
+    'installments' => MAX_CUOTAS,
+    'excluded_payment_methods' => TARJETAS_EXCLUIDAS,
+    'excluded_payment_types' => MEDIOS_DE_PAGO_EXCLUIDOS,
+];
+$preference->auto_return = 'approved';
+$preference->back_urls = [
+    'success' => BASE_URL.'/result.php?result=success',
+    'failure' => BASE_URL.'/result.php?result=failure',
+    'pending' => BASE_URL.'/result.php?result=pending',
+];
+$preference->notification_url = BASE_URL.'/webhooks.php?source_news=webhooks';
 
-// Crea un ítem en la preferencia
+$payer = new MercadoPago\Payer();
+$payer->name = 'Lalo Landa';
+$payer->email = 'test_user_58295862@testuser.com';
+$payer->phone = [
+    'area_code' => '52',
+    'number' => '5549737300',
+];
+$payer->address = [
+    'street_name' => 'Insurgentes Sur',
+    'street_number' => 1602,
+    'zip_code' => '03940',
+];
+
 $item = new MercadoPago\Item();
 $item->id = '1234';
-$item->title = $_POST["title"];
-$item->description = "Dispositivo móvil de Tienda e-commerce";
-$item->quantity = $_POST["unit"];
-$item->unit_price = $_POST["price"];
-// agregamos el item a la preferencia
-$preference->items = array($item);
+$item->title = $_POST['title'];
+$item->description = 'Dispositivo móvil de Tienda e-commerce';
+$item->quantity = 1;
+$item->unit_price = (float) $_POST['price'];
+$item->picture_url = BASE_URL.'/'.$_POST['img'];
 
-// agregamos información del pagador
-$payer = new MercadoPago\Payer();
-$payer->name = "Lalo";
-$payer->surname = "Landa";
-$payer->email = $user_email;
-$payer->phone = array(
-    "area_code" => "11",
-    "number" => "22223333"
-);
-$payer->address = array(
-    "street_name" => "False",
-    "street_number" => 123,
-    "zip_code" => "1111"
-);
-// agregamos el pagador a la preferencia
 $preference->payer = $payer;
-
-// seteamos los medios de pago aceptados
-/* la documentacion propone excluir el metodo de pago "atm", pero el mismo no se obtuvo al hacer un get a https://api.mercadopago.com/v1/payment_methods?public_key=
-    igualmente agregamos la exclusion para seguir la documentacion
-*/
-$preference->payment_methods = array(
-    "excluded_payment_methods" => array(
-      array("id" => "amex")
-    ),
-    "excluded_payment_types" => array(
-      array("id" => "atm")
-    ),
-    "installments" => 6
-  );
-
-// agregamos el correo en external_reference, según lo indicado en la guia
-$preference->external_reference = "skievacd@gmail.com";
-// seteamos el autoretorno tras pago aprobado
-$preference->auto_return = "approved";
-$preference->back_urls = array(
-    "success" => $_SERVER['SERVER_NAME'] . "/success.php",
-    "failure" => $_SERVER['SERVER_NAME'] . "/failure.php",
-    "pending" => $_SERVER['SERVER_NAME'] . "/pending.php",
-);
-
-// seteamos el endpoint para las notificaciones de estados de pago
-$preference->notification_url = $_SERVER['SERVER_NAME'] . "/notifications.php?source_news=webhooks";
-
-// registramos la preferencia
+$preference->items = [$item];
 $preference->save();
-
 ?>
-
-
 <!DOCTYPE html>
 <html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US">
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+    
     <meta name="viewport" content="width=1024">
     <title>Tienda e-commerce</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="format-detection" content="telephone=no">
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+    <script src="https://www.mercadopago.com/v2/security.js" view="home"></script>
+
+    <header name="X-Frame-Options" value="ALLOW FROM https://www.mercadopago.com.mx/ "> </header>
 
     <link rel="stylesheet" href="./assets/category-landing.css" media="screen, print">
 
@@ -111,161 +74,26 @@ $preference->save();
             font-weight: 700;
             color: #333;
         }
-
         .row.as-fixed-nav {
             border-bottom: 1px solid #ddd;
         }
-
         .as-producttile-tilehero.with-paddlenav.with-paddlenav-onhover {
             height: 330px;
         }
-
         .as-footnotes {
             background: #333;
             color: #fff;
             padding: 16px 40px;
         }
     </style>
-    <style type="text/css">
-        @keyframes loading-rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes loading-dash {
-            0% {
-                stroke-dasharray: 1, 200;
-                stroke-dashoffset: 0;
-            }
-
-            50% {
-                stroke-dasharray: 100, 200;
-                stroke-dashoffset: -20px;
-            }
-
-            100% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -124px;
-            }
-        }
-
-        @keyframes loading-fade-in {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .mp-spinner {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            font-size: 70px;
-            margin-left: -35px;
-            animation: loading-rotate 2.5s linear infinite;
-            transform-origin: center center;
-            width: 1em;
-            height: 1em;
-        }
-
-        .mp-spinner-path {
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-            animation: loading-dash 1.5s ease-in-out infinite;
-            stroke-linecap: round;
-            stroke-width: 2px;
-            stroke: #009ee3;
-        }
-    </style>
-
-    <style type="text/css">
-        @keyframes loading-rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes loading-dash {
-            0% {
-                stroke-dasharray: 1, 200;
-                stroke-dashoffset: 0;
-            }
-
-            50% {
-                stroke-dasharray: 100, 200;
-                stroke-dashoffset: -20px;
-            }
-
-            100% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -124px;
-            }
-        }
-
-        @keyframes loading-fade-in {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .mp-spinner {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            font-size: 70px;
-            margin-left: -35px;
-            animation: loading-rotate 2.5s linear infinite;
-            transform-origin: center center;
-            width: 1em;
-            height: 1em;
-        }
-
-        .mp-spinner-path {
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-            animation: loading-dash 1.5s ease-in-out infinite;
-            stroke-linecap: round;
-            stroke-width: 2px;
-            stroke: #009ee3;
-        }
-    </style>
-    <style type="text/css">
-        .mercadopago-button {
-            padding: 0 1.7142857142857142em;
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            font-size: 0.875em;
-            line-height: 2.7142857142857144;
-            background: #009ee3;
-            border-radius: 0.2857142857142857em;
-            color: #fff;
-            cursor: pointer;
-            border: 0;
-        }
-
-        .mp-btn{
-            padding: 0.5rem !important;
-            text-decoration: none !important;
-        }
-
-    </style>
-   
-
-</head>
+    <style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style><style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style><style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style><style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style><style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style><style type="text/css"> @keyframes loading-rotate { 100% { transform: rotate(360deg); } } @keyframes loading-dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; } 50% { stroke-dasharray: 100, 200; stroke-dashoffset: -20px; } 100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } } @keyframes loading-fade-in { from { opacity: 0; } to { opacity: 1; } } .mp-spinner { position: absolute; top: 100px; left: 50%; font-size: 70px; margin-left: -35px; animation: loading-rotate 2.5s linear infinite; transform-origin: center center; width: 1em; height: 1em; } .mp-spinner-path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: loading-dash 1.5s ease-in-out infinite; stroke-linecap: round; stroke-width: 2px; stroke: #009ee3; } </style><style type="text/css"> .mercadopago-button { padding: 0 1.7142857142857142em; font-family: "Helvetica Neue", Arial, sans-serif; font-size: 0.875em; line-height: 2.7142857142857144; background: #009ee3; border-radius: 0.2857142857142857em; color: #fff; cursor: pointer; border: 0; } </style></head>
 
 
 
 <body class="as-theme-light-heroimage">
 
     <div class="stack">
-
+        
         <div class="as-search-wrapper" role="main">
             <div class="as-navtuck-wrapper">
                 <div class="as-l-fullwidth  as-navtuck" data-events="event52">
@@ -308,14 +136,15 @@ $preference->save();
                             </div>
                         </div>
                         <div class="as-accessories-results  as-search-desktop">
+                            
                             <div class="width:60%">
                                 <div class="as-producttile-tilehero with-paddlenav " style="float:left;">
                                     <div class="as-dummy-container as-dummy-img">
 
-                                        <img src="./assets/wireless-headphones" class="ir ir item-image as-producttile-image  " style="max-width: 70%;max-height: 70%;" alt="" width="445" height="445">
+                                        <img src="./assets/wireless-headphones" class="ir ir item-image as-producttile-image  " style="max-width: 70%;max-height: 70%;"alt="" width="445" height="445">
                                     </div>
                                     <div class="images mini-gallery gal5 ">
-
+                                    
 
                                         <div class="as-isdesktop with-paddlenav with-paddlenav-onhover">
                                             <div class="clearfix image-list xs-no-js as-util-relatedlink relatedlink" data-relatedlink="6|Powerbeats3 Wireless Earphones - Neighborhood Collection - Brick Red|MPXP2">
@@ -323,13 +152,13 @@ $preference->save();
                                                     <div class=""></div>
                                                     <img src="./assets/003.jpg" class="ir ir item-image as-producttile-image" alt="" width="445" height="445" style="content:-webkit-image-set(url(<?php echo $_POST['img'] ?>) 2x);">
                                                 </div>
-
+                                                
                                             </div>
 
-
+                                            
                                         </div>
 
-
+                                        
 
                                     </div>
 
@@ -340,22 +169,28 @@ $preference->save();
                                             <h3 class="as-producttile-name">
                                                 <p class="as-producttile-tilelink">
                                                     <span data-ase-truncate="2"><?php echo $_POST['title'] ?></span>
-                                                    <input id="txtProductName" type="hidden" value="<?php echo $_POST['title'] ?>">
                                                 </p>
 
                                             </h3>
                                         </div>
-                                        <h3>
-                                            <?php echo "$" . $_POST['price'] ?>
-                                            <input id="txtProductPrice" type="hidden" value="<?php echo $_POST['price'] ?>">
+                                        <h3 >
+                                            <?php echo "$" .$_POST['price'] ?>
                                         </h3>
-                                        <h3>
+                                        <h3 >
                                             <?php echo  $_POST['unit'] ?>
-                                            <input id="txtProductAmount" type="hidden" value="<?php echo $_POST['unit'] ?>">
                                         </h3>
                                     </div>
-                                    <!-- <button id="btnPagar" type="submit" class="mercadopago-button" formmethod="post">Pagar la compra</button> -->
-                                    <script src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js" data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra"></script>
+                                    <form >
+                                            <input type="hidden" name="img" value=<?php echo  $_POST['img'] ?>>
+                                            <input type="hidden" name="title" value=<?php echo  $_POST['title'] ?>>
+                                            <input type="hidden" name="price" value=<?php echo  $_POST['price'] ?>>
+                                            <input type="hidden" name="unit" value=<?php echo  $_POST['unit'] ?>>
+                                            <script
+  src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
+  data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra">
+</script>
+                                        </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -372,30 +207,4 @@ $preference->save();
             </div>
         </div>
 
-    </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50">
-            <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle>
-        </svg> </div>
-    <div id="ac-gn-viewport-emitter"> </div>
-
-    <!-- codigo de seguridad mp -->
-    <script src="https://www.mercadopago.com/v2/security.js" view="item"></script>
-
-</body>
-
-</html>
+</div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div class="mp-mercadopago-checkout-wrapper" style="z-index:-2147483647;display:block;background:rgba(0, 0, 0, 0.7);border:0;overflow:hidden;visibility:hidden;margin:0;padding:0;position:fixed;left:0;top:0;width:0;opacity:0;height:0;transition:opacity 220ms ease-in;"> <svg class="mp-spinner" viewBox="25 25 50 50"> <circle class="mp-spinner-path" cx="50" cy="50" r="20" fill="none" stroke-miterlimit="10"></circle> </svg> </div><div id="ac-gn-viewport-emitter"> </div></body></html>
