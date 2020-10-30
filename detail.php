@@ -2,19 +2,18 @@
 
 require_once './vendor/autoload.php';
 /* get data from .env */
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+
 
 /* access keys */
-$access_token = $_ENV['ACCESS_TOKEN'];
-$public_key = $_ENV['PUBLIC_KEY'];
-$collector_id = $_ENV['COLLECTOR_ID'];
-$integrator_id = $_ENV['INTEGRATOR_ID'];
+$access_token = "APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948";
+$public_key = "APP_USR-158fff95-0bdf-4149-9abc-c8b0ac7f289f";
+$collector_id = "592190948";
+$integrator_id = "dev_24c65fb163bf11ea96500242ac130004";
 
 /* seller user data */
-$user_id = $_ENV['USER_ID'];
-$user_email = $_ENV['USER_EMAIL'];
-$user_password = $_ENV['USER_PASSWORD'];
+$user_id = "535650015";
+$user_email = "test_user_58295862@testuser.com";
+$user_password = "qatest9980";
 
 // Agrega credenciales
 MercadoPago\SDK::setAccessToken($access_token);
@@ -356,7 +355,7 @@ $preference->save();
                                         </h3>
                                     </div>
                                     <!-- <button id="btnPagar" type="submit" class="mercadopago-button" formmethod="post">Pagar la compra</button> -->
-                                    <a class="mercadopago-button mp-btn" href="<?php echo $preference->init_point; ?>">Pagar la compra</a>
+                                    <script src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js" data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra"></script>
                                 </div>
                             </div>
                         </div>
