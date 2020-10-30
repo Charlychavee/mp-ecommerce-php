@@ -1,6 +1,6 @@
 
 <?php
-   include 'ml.php'
+   // include 'ml.php'
 ?>
 <!DOCTYPE html>
 <html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US">
@@ -141,7 +141,7 @@
                                             <?php echo  $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <form method="get">
+                                    <form action="/pago.php" method="get">
                                             <input type="hidden" name="img" value=<?php echo  $_POST['img'] ?>>
                                             <input type="hidden" name="title" value=<?php echo  $_POST['title'] ?>>
                                             <input type="hidden" name="price" value=<?php echo  $_POST['price'] ?>>
