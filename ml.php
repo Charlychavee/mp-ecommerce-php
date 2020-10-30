@@ -12,10 +12,10 @@
 
         $item->id =1234;
         $item->description =  "Dispositivo móvil de Tienda e-commerce";
-        $item->title = $_POST['title'] ;
+        $item->title = "Telefono" ;
         $item->quantity = 1;
-        $item->unit_price = $_POST['price'];
-        $item->picture_url = __DIR__ ."/" . $_POST['img'];
+        $item->unit_price ="10000";
+        $item->picture_url = "img.png";
         $preference->items = array($item);
 
         $preference->payment_methods = array(
