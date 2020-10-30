@@ -32,9 +32,9 @@ class DbHandler {
             $collection = $this->db->notifications;
             
             // agregamos la notificacion
-            $respuestaDB = $collection->insertOne(json_decode($notification, true));
+            //$respuestaDB = $collection->insertOne(json_decode($notification, true));
 
-            $data = ["status" => 200, "msg" => "exito", "insertedDocuments" => $respuestaDB->getInsertedCount(), "oid" => $respuestaDB->getInsertedId()];
+            $data = ["status" => 200, "msg" => "exito", "insertedDocuments" => "1", "oid" => "1"];
 
             return $data;
         
