@@ -141,7 +141,7 @@
                                             <?php echo  $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <form action="/cursos/mp-ecommerce-php/detail.php" method="get">
+                                    <form >
                                             <input type="hidden" name="img" value=<?php echo  $_POST['img'] ?>>
                                             <input type="hidden" name="title" value=<?php echo  $_POST['title'] ?>>
                                             <input type="hidden" name="price" value=<?php echo  $_POST['price'] ?>>
