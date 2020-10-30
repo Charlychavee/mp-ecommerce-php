@@ -1,5 +1,9 @@
 {
-    "name": "mp-ecommerce-php",
+    "name": "skievacd/mp-ecommerce-php",
     "type": "project",
-    "require": {}
+    "require": {
+        "mercadopago/dx-php": "^2.1",
+        "vlucas/phpdotenv": "^5.2",
+        "mongodb/mongodb": "^1.7"
+    }
 }

@@ -12,11 +12,11 @@
 
         $item->id =1234;
         $item->description =  "Dispositivo móvil de Tienda e-commerce";
-        $item->title = "Telefono" ;
+        $item->title = $_POST['title'] ;
         $item->quantity = 1;
-        $item->unit_price ="10000";
-        $item->picture_url = "img.png";
-        $preference->items = array($item);
+        $item->unit_price = $_POST['price'];
+        $item->picture_url = "https://www.cositec.com.mx/proyectos/ecommerce/" . $_POST['img'];
+        
 
         $preference->payment_methods = array(
             "excluded_payment_methods" => array(
@@ -27,6 +27,16 @@
             ),
             "installments" => 6
           );
+
+        $preference->back_urls = array(
+            "success" => "https://www.cositec.com.mx/proyectos/ecommerce/success",
+            "failure" => "https://www.cositec.com.mx/proyectos/ecommerce/failure",
+            "pending" => "https://www.cositec.com.mx/proyectos/ecommerce/pending"
+        );
+
+        $preference->auto_return = "approved";
+        $preference->external_reference = "charlychavee2@gmail.com";
+        $preference->notification_url = "https://www.cositec.com.mx/proyectos/ecommerce/webhook.php";
 
         $payer = new MercadoPago\Payer();
         $payer->name = "Lalo";
@@ -44,22 +54,11 @@
           "zip_code" => "03940"
         );
 
-        
-
-        /*$preference->back_urls = array(
-            "success" => "/success",
-            "failure" => "/failure",
-            "pending" => "/pending"
-        );*/
-
-        //$preference->auto_return = "approved";
-        $preference->external_reference = "charlychavee2@gmail.com";
-        //$preference->notification_url = "/webhook.php";
-        //$preference->collector_id = "592190948";
-        //$preference->collector_id = "592190948";
-
-
+        $preference->payer = $payer;
+        $preference->items = array($item);
         $preference->save();
+
+
 
          /*curl -X GET "https://api.mercadopago.com/v1/customers/8058997674329963/cards" -H "Authorization: Bearer APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948"
           
