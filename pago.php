@@ -1,3 +1,3 @@
   <?php
-include 'ml.php'
+	require 'ml.php'
   ?>
