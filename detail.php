@@ -1,50 +1,66 @@
 <?php
-include_once __DIR__.'/bootstrap.php';
+    // SDK Mercado Pago
+    require_once 'vendor/autoload.php';
 
-$preference = new MercadoPago\Preference();
-$preference->external_reference = 'charlychavee2@gmail.com';
-$preference->payment_methods = [
-    'installments' => MAX_CUOTAS,
-    'excluded_payment_methods' => TARJETAS_EXCLUIDAS,
-    'excluded_payment_types' => MEDIOS_DE_PAGO_EXCLUIDOS,
-];
-$preference->auto_return = 'approved';
-$preference->back_urls = [
-    'success' => BASE_URL.'/result.php?result=success',
-    'failure' => BASE_URL.'/result.php?result=failure',
-    'pending' => BASE_URL.'/result.php?result=pending',
-];
-$preference->notification_url = BASE_URL.'/webhooks.php?source_news=webhooks';
+    // Definir credenciales
+    MercadoPago\SDK::setAccessToken("APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948"); // Either
+   
+    // Integrador
+    MercadoPago\SDK::setIntegratorId("dev_24c65fb163bf11ea96500242ac130004");
 
-$payer = new MercadoPago\Payer();
-$payer->name = 'Lalo Landa';
-$payer->email = 'test_user_58295862@testuser.com';
-$payer->phone = [
-    'area_code' => '52',
-    'number' => '5549737300',
-];
-$payer->address = [
-    'street_name' => 'Insurgentes Sur',
-    'street_number' => 1602,
-    'zip_code' => '03940',
-];
+    // Crea un objeto de preferencia
+    $preference = new MercadoPago\Preference();
 
-$item = new MercadoPago\Item();
-$item->id = '1234';
-$item->title = $_POST['title'];
-$item->description = 'Dispositivo móvil de Tienda e-commerce';
-$item->quantity = 1;
-$item->unit_price = (float) $_POST['price'];
-$item->picture_url = BASE_URL.'/'.$_POST['img'];
 
-$preference->payer = $payer;
-$preference->items = [$item];
-$preference->save();
+    $preference->payment_methods = array(
+        "excluded_payment_methods" => array(
+          array("id" => "amex")
+        ),
+        "excluded_payment_types" => array(
+          array("id" => "atm")
+        ),
+        "installments" => 6
+    );
+
+    $payer = new MercadoPago\Payer();
+    $payer->name = "Lalo";
+    $payer->surname = "Landa";
+    $payer->email = "test_user_58295862@testuser.com";
+    $payer->phone = array(
+        "area_code" => 52,
+        "number" => 5549737300
+      );
+      $payer->address = array(
+        "street_name" => "Insurgentes Sur",
+        "street_number" => "1602",
+        "zip_code" => "5549737300"
+      );
+
+    // Crea un ítem en la preferencia
+    $item = new MercadoPago\Item();
+    $item->id = 1234;
+    $item->title = $_POST['title'];
+    $item->description = "Dispositivo móvil de Tienda e-commerce";
+    $item->picture_url = "https://charlychavee-mp-ecommerce-php.herokuapp.com".$_POST['img'];
+    $item->quantity = $_POST['unit'];
+    $item->unit_price = $_POST['price'];
+    $preference->items = array($item);
+
+    $preference->external_reference = "sebastian.ferrari@onlines.com.ar";
+
+    // Páginas de retorno
+    $preference->back_urls = array(
+        "success" => "https://charlychavee-mp-ecommerce-php.herokuapp.com/pago-success.php",
+        "failure" => "https://charlychavee-mp-ecommerce-php.herokuapp.com/pago-failure.php",
+        "pending" => "https://charlychavee-mp-ecommerce-php.herokuapp.com/pago-pending.php"
+    );
+    $preference->auto_return = "approved";
+    $preference->notification_url = "https://charlychavee-mp-ecommerce-php.herokuapp.com/webhook.php?source_news=webhooks";
+    $preference->payer = $payer;
+    $preference->save();
 ?>
 <!DOCTYPE html>
-<html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=1024">
     <title>Tienda e-commerce</title>
@@ -57,9 +73,7 @@ $preference->save();
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
 
-    <script src="https://www.mercadopago.com/v2/security.js" view="home"></script>
-
-    <header name="X-Frame-Options" value="ALLOW FROM https://www.mercadopago.com.mx/ "> </header>
+    <script src="https://www.mercadopago.com/v2/security.js" view="item"></script>
 
     <link rel="stylesheet" href="./assets/category-landing.css" media="screen, print">
 
@@ -136,7 +150,6 @@ $preference->save();
                             </div>
                         </div>
                         <div class="as-accessories-results  as-search-desktop">
-                            
                             <div class="width:60%">
                                 <div class="as-producttile-tilehero with-paddlenav " style="float:left;">
                                     <div class="as-dummy-container as-dummy-img">
@@ -174,23 +187,16 @@ $preference->save();
                                             </h3>
                                         </div>
                                         <h3 >
-                                            <?php echo "$" .$_POST['price'] ?>
+                                            <?php echo $_POST['price'] ?>
                                         </h3>
                                         <h3 >
-                                            <?php echo  $_POST['unit'] ?>
+                                            <?php echo "$" . $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <form >
-                                            <input type="hidden" name="img" value=<?php echo  $_POST['img'] ?>>
-                                            <input type="hidden" name="title" value=<?php echo  $_POST['title'] ?>>
-                                            <input type="hidden" name="price" value=<?php echo  $_POST['price'] ?>>
-                                            <input type="hidden" name="unit" value=<?php echo  $_POST['unit'] ?>>
-                                            <script
+                                    <script
   src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
   data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra">
 </script>
-                                        </form>
-                                    
                                 </div>
                             </div>
                         </div>
