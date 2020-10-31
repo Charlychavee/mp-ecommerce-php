@@ -208,11 +208,12 @@
                                             <?php echo $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <script
+                                    <!--<script
                                         src="https://www.mercadopago.com.mx/integrations/v1/web-payment-checkout.js"
                                         data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra">
-                                    </script>
-                                    <a href="<?php echo $preference->sandbox_init_point; ?>">Pagar con Mercado Pago</a>
+                                    </script> -->
+
+                                    <a href="<?php echo $preference->init_point; ?>">Pagar la compra</a>
                                     <!-- <span class="btn btn-info"  data-toggle="modal" data-target="#myModal">Pagar la compra</span> -->
                                 </div>
                             </div>

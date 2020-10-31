@@ -1,4 +1,32 @@
 <?php
+
+  $auxvar = $_GET['collection_id'];
+  $auxvar2 = $_GET['collection_status'];
+  $auxvar3 = $_GET['external_reference'];
+  $auxvar4 = $_GET['merchant_account_id'];
+  $auxvar5 = $_GET['merchant_order_id'];
+  $auxvar6 = $_GET['payment_id'];
+  $auxvar7 = $_GET['payment_type'];
+  $auxvar8 = $_GET['preference_id'];
+  $auxvar9 = $_GET['processing_mode'];
+  $auxvar10 = $_GET['site_id'];
+  $auxvar11 = $_GET['status'];
+
+  $list = '
+ <li>collection_id: '.$auxvar.'</li>
+ <li>collection_status: '.$auxvar2.'</li>
+ <li>external_reference: '.$auxvar3.'</li>
+ <li>merchant_account_id: '.$auxvar4.'</li>
+ <li>merchant_order_id: '.$auxvar5.'</li>
+ <li>payment_id: '.$auxvar6.'</li>
+ <li>payment_type: '.$auxvar7.'</li>
+ <li>preference_id: '.$auxvar8.'</li>
+ <li>processing_mode: '.$auxvar9.'</li>
+ <li>site_id: '.$auxvar10.'</li>
+ <li>status: '.$auxvar11.'</li>
+ ';
+
+
 $url_bases = explode('/', $_SERVER['REQUEST_URI']);
 $url_base='';
 if(count($url_bases) >2)
@@ -56,9 +84,20 @@ $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http
 
 
 <body class="as-theme-light-heroimage">
-    <div class="stack">
-        <h2> <?= $mensaje?></h2>
-        <a class="btn btn-success" href="<?= $url?>">Comprar otro equipo</a>
+    <div class="container">
+        <div class="notification">
+            <div class="card">
+                <div class="card-body">
+                    <span class="card-title">Pago realizado exitosamente!</span>
+                    <ul>
+                        <?php echo $list; ?>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                     <a class="btn btn-success" href="<?= $url?>">Comprar otro equipo</a>
+                </div>
+            </div>
+        </div>
     </div>
     
 </body>
