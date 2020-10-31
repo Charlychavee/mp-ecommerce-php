@@ -38,11 +38,22 @@ switch($_POST["type"]) {
         break;
 
     echo '<pre>'; 
-    var_dump($payment);
-    var_dump($plan);
+    //var_dump($payment);
+    //var_dump($plan);
     echo'</pre>';
 }
 
 ob_clean();
 header("HTTP/1.1 200 OK");
+
+/*https://sandbox.mercadopago.com.mx/checkout/v1/redirect/c1ee5242-231d-4d0c-9e8f-13542b6e7164/congrats/approved/?preference-id=592190948-093c7fbc-0df4-46d2-a694-c124dc5b2b8d&p=5f834c3c15fccb03a634d95a44988835
+
+http://charlychavee-mp-ecommerce-php.herokuapp.com/success.php?collection_id=1230862677&collection_status=approved&payment_id=1230862677&status=approved&external_reference=charlychavee2@gmail.com&payment_type=credit_card&merchant_order_id=1929922604&preference_id=592190948-093c7fbc-0df4-46d2-a694-c124dc5b2b8d&site_id=MLM&processing_mode=aggregator&merchant_account_id=null
+
+
+https://sandbox.mercadopago.com.mx/checkout/v1/redirect/c97f149e-e09e-40cd-8517-4280cb45b361/congrats/approved/?preference-id=592190948-5c424773-6965-41fc-8f7b-3868943a39d2&p=5f834c3c15fccb03a634d95a44988835
+
+https://www.cositec.com.mx/proyectos/ecommerce/success.php?collection_id=1230862731&collection_status=approved&payment_id=1230862731&status=approved&external_reference=charlychavee2@gmail.com&payment_type=credit_card&merchant_order_id=1929962902&preference_id=592190948-5c424773-6965-41fc-8f7b-3868943a39d2&site_id=MLM&processing_mode=aggregator&merchant_account_id=null*/
 ?>
+
+

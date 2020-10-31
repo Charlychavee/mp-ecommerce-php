@@ -4,7 +4,7 @@
     $url_base='';
     if(count($url_bases) >2)
     {
-        $url_base='/'.$url_bases[1];
+        $url_base='/'.$url_bases[1].'/'.$url_bases[2];
     }
     if(empty($_POST))
     {
@@ -20,7 +20,7 @@
     $preference = new MercadoPago\Preference();
     
     # Building an item
-    $linkbase='https://charlychavee-mp-ecommerce-php.herokuapp.com/';
+    $linkbase='https://www.cositec.com.mx/proyectos/ecommerce/';
     $item1 = new MercadoPago\Item();
     $item1->id = "1234";
     $item1->picture_url=$linkbase.str_replace('./','/',$_POST['img']);

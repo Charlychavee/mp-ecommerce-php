@@ -4,7 +4,7 @@ $url_bases = explode('/', $_SERVER['REQUEST_URI']);
 $url_base='';
 if(count($url_bases) >2)
 {
-    $url_base='/'.$url_bases[1];
+    $url_base='/'.$url_bases[1].'/'.$url_bases[2];
 }
 
 try 
