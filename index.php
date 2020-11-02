@@ -275,7 +275,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $15.000
+                                                $15000
                                             </div>
                                         </div>
                                         <form action="<?= $url_base?>/detail.php" method="get">
@@ -330,7 +330,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $10.000
+                                                $10000
                                             </div>
                                         </div>
                                         <form action="<?= $url_base?>/detail.php" method="get">
@@ -386,7 +386,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $16.000
+                                                $16000
                                                 <span class="as-price-previousprice as-producttile-previousprice">
                                                 </span>
                                             </div>
@@ -443,7 +443,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $9.000
+                                                $9000
                                                 <span class="as-price-previousprice as-producttile-previousprice">
                                                 </span>
                                             </div>
@@ -495,7 +495,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $8.000
+                                                $8000
                                             </div>
                                         </div>
                                         <form action="<?= $url_base?>/detail.php" method="get">
@@ -544,7 +544,7 @@ catch(\Exception $ex)
                                                 </h3>
                                             </div>
                                             <div class="as-price-currentprice as-producttile-currentprice">
-                                                $10.000
+                                                $10000
                                                 <span class="as-price-previousprice as-producttile-previousprice">
                                                 </span>
                                             </div>
