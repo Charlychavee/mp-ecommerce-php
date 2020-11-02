@@ -20,7 +20,9 @@
     $preference = new MercadoPago\Preference();
     
     # Building an item
-    $linkbase='https://www.cositec.com.mx/proyectos/ecommerce/';
+    
+    $linkbase='https://charlychavee-mp-ecommerce-php.herokuapp.com/';
+    $linkbase2='https://www.cositec.com.mx/proyectos/ecommerce';
     $item1 = new MercadoPago\Item();
     $item1->id = "1234";
     $item1->picture_url=$linkbase.str_replace('./','/',$_POST['img']);
@@ -28,6 +30,8 @@
     $item1->title = $_POST['title']; 
     $item1->quantity = $_POST['unit'];
     $item1->unit_price = $_POST['price'];
+    $item1->currency_id = "MXN";
+    $item1->description = "Dispositivo móvil de Tienda e-commerce";
     $preference->items = [$item1];
     $baseback=(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://".$_SERVER['HTTP_HOST'].$url_base;
     $backUrl=[
@@ -52,7 +56,7 @@
     ];
     $preference->payer=(object)$payer;
     $preference->back_urls=$backUrl;
-    $preference->notification_url=$baseback.'/ipn.php';
+    $preference->notification_url=$linkbase2.'/ipn.php';
     $preference->auto_return='approved';
     $preference->payment_methods = [
         'excluded_payment_methods' => [
@@ -64,7 +68,14 @@
     ];
     $preference->external_reference = "charlychavee2@gmail.com";
     $preference->save();
-    // var_dump($preference);
+
+    //$json_event = file_get_contents('php://input', true);
+    //$json_event_decode = json_decode($preference);
+    //var_dump($preference);
+    $logFile = fopen("log-mp-preference-json.txt", 'a') or die("Error creando archivo");
+    fwrite($logFile, print_r($preference, true));
+    fclose($logFile);
+    //var_dump($preference);
     // echo $preference->sandbox_init_point;
     // echo $preference->id;
 
@@ -213,7 +224,7 @@
                                         data-preference-id="<?php echo $preference->id; ?>" data-button-label="Pagar la compra">
                                     </script> -->
 
-                                    <a href="<?php echo $preference->init_point; ?>">Pagar la compra</a>
+                                     <a href="<?php echo $preference->init_point; ?>">Pagar la compra</a>
                                     <!-- <span class="btn btn-info"  data-toggle="modal" data-target="#myModal">Pagar la compra</span> -->
                                 </div>
                             </div>

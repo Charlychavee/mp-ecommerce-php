@@ -3,16 +3,34 @@
 $json_event = file_get_contents('php://input', true);
 $json_event_decode = json_decode($json_event);
 $logFile = fopen("log-mp-json.txt", 'a') or die("Error creando archivo");
-fwrite($logFile, print_r($json_event, true));
+fwrite($logFile, "\n\n" .  print_r($json_event, true));
+fwrite($logFile, "\n\n--------------");
 fclose($logFile);
 
 $logFile = fopen("log-mp-json-dos.txt", 'a') or die("Error creando archivo");
-fwrite($logFile, print_r($json_event, true));
+fwrite($logFile, "\n\n" .  print_r($json_event_decode, true));
+fwrite($logFile, "\n\n--------------");
 fclose($logFile);
+
+
+$logFile = fopen("log-mp-json-get.txt", 'a') or die("Error creando archivo");
+fwrite($logFile, "\n\n" .  print_r($_GET, true));
+fwrite($logFile, "\n\n--------------");
+fclose($logFile);
+
+if(isset($_POST)){
+    
+    $logFile = fopen("log-mp-json-post.txt", 'a') or die("Error creando archivo");
+    fwrite($logFile, "\n\n" .  print_r($_POST, true));
+    fwrite($logFile, "\n\n--------------");
+    fclose($logFile);
+}
+
+
 
 require_once 'vendor/autoload.php'; 
 MercadoPago\SDK::setAccessToken('APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948');
-
+/*
 switch($_POST["type"]) {
     case "payment":
         //$payment = MercadoPago\Payment.find_by_id($_POST["id"]);
@@ -41,6 +59,24 @@ switch($_POST["type"]) {
     //var_dump($payment);
     //var_dump($plan);
     echo'</pre>';
+}*/
+
+if ($_GET["topic"] == "payment") {
+    
+    $payment = MercadoPago\Payment::find_by_id($_GET["id"]);
+    $merchant_order = MercadoPago\MerchantOrder::find_by_id($payment->order->id);
+
+    $logFile = fopen("log-mp-tres.txt", 'a') or die("Error creando archivo");
+    fwrite($logFile, "\n\n" . print_r($payment, true));
+    fwrite($logFile, "\n\n--------------");
+    fclose($logFile);
+
+    $logFile = fopen("log-mp-cuatro.txt", 'a') or die("Error creando archivo");
+    fwrite($logFile, "\n\n" . print_r($merchant_order, true));
+    fwrite($logFile, "\n\n--------------");
+    fclose($logFile);
+}else{
+    
 }
 
 ob_clean();
