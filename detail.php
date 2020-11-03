@@ -12,17 +12,16 @@
      exit;
     }
     // Agrega credenciales
-    MercadoPago\SDK::setAccessToken('APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948');
-    MercadoPago\SDK::setPublicKey('APP_USR-158fff95-0bdf-4149-9abc-c8b0ac7f289f');
+    MercadoPago\SDK::setAccessToken('APP_USR-1159009372558727-072921-8d0b9980c7494985a5abd19fbe921a3d-617633181');
+    MercadoPago\SDK::setPublicKey('APP_USR-d81f7be9-ee11-4ff0-bf4e-20c36981d7bf');
     MercadoPago\SDK::setIntegratorId('dev_24c65fb163bf11ea96500242ac130004');
 
     // Crea un objeto de preferencia
     $preference = new MercadoPago\Preference();
     
     # Building an item
-    
-    $linkbase='https://charlychavee-mp-ecommerce-php.herokuapp.com/';
-    $linkbase2='https://www.cositec.com.mx/proyectos/ecommerce';
+
+    $linkbase='https://www.cositec.com.mx/proyectos/ecommerce/';
     $item1 = new MercadoPago\Item();
     $item1->id = "1234";
     $item1->picture_url=$linkbase.str_replace('./','/',$_POST['img']);
@@ -43,7 +42,7 @@
     $payer=[
         'name'=>'Lalo',
         'surname'=>'Landa',
-        'email'=>'test_user_58295862@testuser.com',
+        'email'=>'test_user_81131286@testuser.com',
         'phone'=>[
             'area_code'=>'52',
             'number'=>'5549737300'
@@ -56,7 +55,7 @@
     ];
     $preference->payer=(object)$payer;
     $preference->back_urls=$backUrl;
-    $preference->notification_url=$linkbase2.'/ipn.php';
+    $preference->notification_url=$baseback.'/ipn.php';
     $preference->auto_return='approved';
     $preference->payment_methods = [
         'excluded_payment_methods' => [
